@@ -7,7 +7,7 @@ programa
 	funcao inicio()
 	{
 		//Caminho pra fonte de dados i.e. pro arquivo que contém as palavras e dicas:
-		cadeia fonte="palavras.txt"
+		cadeia fonte="jogo.txt"
 		//Sai do programa caso a fonte de dados não seja encontrada:
 		se(nao a.arquivo_existe(fonte))
 		{
