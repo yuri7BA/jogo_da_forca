@@ -1,44 +1,42 @@
-P:palav1
-D:dica11
-D:dica12
-D:dica13
-D:dica14
-D:dica15
-P:palav2
-D:dica21
-D:dica22
-D:dica23
-D:dica24
-D:dica25
-P:palav3
-D:dica31
-D:dica32
-D:dica33
-D:dica34
-D:dica35
-P:palav4
-D:dica41
-D:dica42
-D:dica43
-D:dica44
-D:dica45
-P:palav5
-D:dica51
-D:dica52
-D:dica53
-D:dica54
-D:dica55
-P:palav6
-D:dica61
-D:dica62
-D:dica63
-D:dica64
-D:dica65
-P:palav7
-D:dica71
-D:dica72
-D:dica73
-D:dica74
-D:dica75
-D:dica 76
-D
+P:banana
+D:é uma fruta
+D:é amarela
+D:é comprida
+D:precisa descascar
+D:é vendida em grupos
+P:gato siames
+D:é um animal
+D:é domesticado
+D:tem 4 patas
+D:é de raça asiática
+D:possui orelhas pontiagudas
+P:queijo
+D:é um alimento
+D:geralmente é branco ou amarelo
+D:é salgado
+D:pode ser derretido
+D:é fedorento
+P:abelha
+D:é um animal
+D:é minúsculo
+D:é voador
+D:é vegetariano
+D:produz alimento para humanos
+P:barco
+D:é um veículo
+D:geralmente feito de madeira ou aço
+D:pode ou não ter motor
+D:geralmente é lento
+D:não se desloca na terra
+P:oceano
+D:é um fluido
+D:é salgado
+D:é muito volumoso
+D:abriga inúmeros seres vivos
+D:cor geralmente azul ou verde
+P:blusa
+D:é de tecido
+D:é peça de vestuário
+D:tem geralmente 4 furos
+D:masculino, feminino ou unissex
+D:uso mais frequente no verão
