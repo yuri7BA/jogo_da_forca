@@ -8,6 +8,7 @@ programa
 	inclua biblioteca Tipos-->conv
 	inclua biblioteca Util-->use
 
+
 	// CONSTANTES GLOBAIS
 	// Duração de uma partida, em segundos:
 	const inteiro DURACAO = 60
@@ -18,7 +19,7 @@ programa
 	// Quantidade máxima de chutes (certos + errados) por partida:
 	const inteiro MAX_CHUTES = 26
 
-	
+
 	// VARIÁVEIS GLOBAIS
 	// Define o momento em que a partida em andamento deverá ser encerrada por ter excedido o tempo limite:
 	inteiro timeout
@@ -35,6 +36,9 @@ programa
 	
 	// Nº sorteado que corresponde à linha da palavra na matriz:
 	inteiro numPalSort = use.sorteia(0, qtdPal-1)
+
+	// Armazena o nº da dica da palavra que foi sorteada:
+	inteiro numDica = 1
 	
 	// Palavra sorteada, obtida na linha "numPalSort" e coluna 0 da matriz
 	// que foi gerada a partir do arquivo fonte de dados:
@@ -106,6 +110,7 @@ programa
 					se(t.caixa_alta(chute)=="DICA")
 					{
 						erros++
+						numDica++
 						qtdChutesDados--
 					}
 					senao
@@ -397,7 +402,8 @@ programa
 				pernas="/ \\"
 				pare
 		}
-		escreva("  .:::.   Dica: ",mostrarDica(numPalSort, acertos+erros+1),"\n")
+		//escreva("  .:::.   Dica: ",mostrarDica(numPalSort, acertos+erros+1),"\n")
+		escreva("  .:::.   Dica: ",mostrarDica(numPalSort, numDica),"\n")
 		escreva("  |   |\n")
 		escreva("  ",cabeca,"   |   ",mascararComEspacos(tamanhoPalSort))
 		escreva(" ",tronco,"  |\n")
@@ -438,6 +444,9 @@ programa
 
 		// Sorteia um novo número de palavra:
 		numPalSort = use.sorteia(0, qtdPal-1)
+
+		// Reinicia a numeração da dica da palavra que foi sorteada:
+		numDica = 1
 		
 		// Obtém a nova palavra que foi sorteada:
 		palSort = obter(numPalSort, 0, fonte)
@@ -622,7 +631,7 @@ programa
  * Você pode apagá-la se estiver utilizando outro editor.
  * 
  * @POSICAO-CURSOR = 0; 
- * @DOBRAMENTO-CODIGO = [76, 83, 72, 132, 141, 154, 162, 177, 202, 233, 262, 274, 312, 326, 339, 349, 363, 410, 430, 479, 562, 582, 608, 0];
+ * @DOBRAMENTO-CODIGO = [80, 87, 95, 76, 137, 146, 159, 167, 182, 207, 238, 267, 279, 317, 331, 344, 354, 368, 416, 436, 488, 571, 591, 617, 0];
  * @PONTOS-DE-PARADA = ;
  * @SIMBOLOS-INSPECIONADOS = ;
  * @FILTRO-ARVORE-TIPOS-DE-DADO = inteiro, real, logico, cadeia, caracter, vazio;
