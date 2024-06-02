@@ -1,42 +1,75 @@
 P:banana
 D:é uma fruta
 D:é amarela
-D:é comprida
+D:é alongada
 D:precisa descascar
-D:é vendida em grupos
+D:possui sementes
+D:pode ser gosmenta
+D:alguns a consomem assada
+D:alguns a consomem cozida
+D:é vendida normalmente à dúzia
+D:possui uma ponta
 P:gato siames
 D:é um animal
-D:é domesticado
+D:é de origem asiática
 D:tem 4 patas
-D:é de raça asiática
+D:gosta de se lamber
 D:possui orelhas pontiagudas
+D:tem pelo marrom claro
+D:tem patas escuras
+D:tem cauda
+D:não gosta de água
+D:é doméstico
 P:queijo
 D:é um alimento
-D:geralmente é branco ou amarelo
+D:geralmente branco ou amarelo
 D:é salgado
 D:pode ser derretido
 D:é fedorento
+D:come-se frio ou quente
+D:pode-se comer com pão
+D:produzido por fermentação
+D:duro, macio ou cremoso
+D:é de origem animal
 P:abelha
 D:é um animal
 D:é minúsculo
 D:é voador
 D:é vegetariano
 D:produz alimento para humanos
+D:vive em colônia
+D:trabalha sem parar
+D:vive pouco tempo
+D:gosta de flores
+D:sociedade matriarcal
 P:barco
 D:é um veículo
-D:geralmente feito de madeira ou aço
+D:geralmente de madeira ou aço
 D:pode ou não ter motor
 D:geralmente é lento
-D:não se desloca na terra
+D:não se desloca em estradas
+D:pode ser movido a vento
+D:desloca-se grandes distâncias
+D:não se desloca em trilhos
+D:não pode furar por baixo
+D:balança quando se move
 P:oceano
 D:é um fluido
 D:é salgado
 D:é muito volumoso
 D:abriga inúmeros seres vivos
 D:cor geralmente azul ou verde
-P:blusa
+D:raramente congela
+D:pessoas deslocam-se por ele
+D:é fonte de alimentos
+D:vive sendo poluído
+D:vários países o utilizam
+P:pantufa
 D:é de tecido
 D:é peça de vestuário
-D:tem geralmente 4 furos
+D:geralmente tem só 1 furo
 D:masculino, feminino ou unissex
-D:uso mais frequente no verão
+D:uso frequente no inverno
+D:várias cores
+D:é de calçar
+D:pode ser temático
