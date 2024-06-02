@@ -1,4 +1,4 @@
-programa
+programa // PARA JOGAR, CLIQUE NO BOTÃO "PLAY" DO PORTUGOL OU PRESSIONE SHIFT F6.
 {
 	inclua biblioteca Arquivos-->a
 	inclua biblioteca Calendario-->c
@@ -8,16 +8,21 @@ programa
 	inclua biblioteca Tipos-->conv
 	inclua biblioteca Util-->use
 
-
+	
 	// CONSTANTES GLOBAIS
 	// Duração de uma partida, em segundos:
-	const inteiro DURACAO = 60
+	const inteiro DURACAO_MAX_DO_JOGO = 60
 
 	// Quantidade máxima de erros por partida:
 	const inteiro MAX_ERROS = 6
 
 	// Quantidade máxima de chutes (certos + errados) por partida:
-	const inteiro MAX_CHUTES = 26
+	const inteiro MAX_CHUTES = 30
+
+	// Duração da contagem regressiva na tela de apresentação dos alunos, em segundos:
+	const inteiro DURACAO_COUNTDOWN_ALUNOS = 30
+
+	// Quantidade máxima de chutes que podem ser armazenados no vetor:
 
 
 	// VARIÁVEIS GLOBAIS
@@ -69,13 +74,14 @@ programa
 	inteiro erros = 0
 
 	// Variáveis que armazenam os endereços de memória dos sons utilizados no jogo
-	inteiro somAcertou, somErrou, somPerdeu, somQuit, somStart, somVenceu
+	inteiro somAcertou, somAjuda, somErrou, somPerdeu, somQuit, somStart, somVenceu
 
 	// Inicia o jogo em modo de loop.
 	logico sair=falso
 
 	funcao inicio()
 	{
+		limpa()
 		alunos()
 		// Sai do programa caso o arquivo fonte de dados não seja encontrado:
 		se(nao a.arquivo_existe(fonte))
@@ -92,15 +98,15 @@ programa
 			escreva("Tamanho da palavra sorteada sem repetições: ",tamanhoPalSortSemRepeticoes,"\n") */
 			carregarSons()
 			mascararLetrasChutadas()
-			timeout = use.tempo_decorrido()+DURACAO*1000
+			timeout = use.tempo_decorrido()+DURACAO_MAX_DO_JOGO*1000
 			enquanto(sair==falso)
 			{
 				
-				enquanto (erros < MAX_ERROS e acertos < tamanhoPalSortSemRepeticoes)
+				enquanto (erros < MAX_ERROS e acertos < tamanhoPalSortSemRepeticoes e letrasChutadas[MAX_CHUTES-1] == "")
 				{
 					qtdChutesDados++
 					mostrarForca(erros)
-					escreva("Digite uma letra ou o caractere espaço: ")
+					escreva("Digite uma letra ou o caractere espaço (envie DICA para receber uma dica): ")
 					leia(chute)
 					se(use.tempo_decorrido() >= timeout)
 					{
@@ -109,15 +115,12 @@ programa
 					}
 					se(t.caixa_alta(chute)=="DICA")
 					{
-						erros++
-						numDica++
-						qtdChutesDados--
+						processaDica()
 					}
 					senao
 					{
 						chute = t.caixa_alta(conv.caracter_para_cadeia(t.obter_caracter(chute, 0)))
 						avisaCasoLetraJaChutada()
-						letrasChutadas[qtdChutesDados] = chute
 						contarErrosAcertosEDesmascararAcertos()
 					}
 				}
@@ -137,8 +140,8 @@ programa
 //Apresenta os alunos que desenvolveram o jogo.
 	funcao alunos()
 	{
-		escreva("JOGO DA FORCA, versão 1.0\n\nAlunos: FABIO SAMPAIO (100%, RA 1680482411), JUAN PABLLO (100%, RA 1680482411005) e YURI SUCUPIRA (100%, RA 1680482411003)\n\nJOGO[x] DICAS[x] CONTROLE DE TEMPO[x] --> ")
-		contadorRegressivo1s("CADA PARTIDA DURA NO MÁXIMO "+DURACAO+" SEGUNDOS!\n\nEsta mensagem se autodestruirá em ", 30)
+		escreva("JOGO DA FORCA, versão 1.0 --> JOGO[x] DICAS[x] CONTROLE DE TEMPO[x]\n\nAlunos: FABIO SAMPAIO (100%, RA 1680482411), JUAN PABLLO (100%, RA 1680482411005) e YURI SUCUPIRA (100%, RA 1680482411003)\n\n")
+		contadorRegressivo1s("DURAÇÃO MÁXIMA DA PARTIDA: "+DURACAO_MAX_DO_JOGO+" SEGUNDOS. VOCÊ PODE DAR NO MÁXIMO "+MAX_CHUTES+" CHUTES E ERRAR NO MÁXIMO "+MAX_ERROS+" CHUTES.\nPARA PEDIR UMA DICA AO JOGO, ENVIE A PALAVRA 'DICA' NO LUGAR DO CHUTE, MAS CADA PEDIDO DE DICA CONTA COMO UM CHUTE ERRADO!\n\nEsta mensagem se autodestruirá em ", DURACAO_COUNTDOWN_ALUNOS)
 		limpa()
 	}
 
@@ -150,9 +153,14 @@ programa
 		{
 			escreva("Você já chutou essa letra!\n")
 			erros--
+			qtdChutesDados--
 			use.aguarde(1000)
 		}
-		senao escreva("\n")
+		senao
+		{
+			letrasChutadas[qtdChutesDados] = chute
+			escreva("\n")
+		}
 	}
 
 
@@ -168,39 +176,13 @@ programa
 	funcao carregarSons()
 	{
 		cadeia diretorioSons = "sons/"
+		somAjuda = s.carregar_som(diretorioSons + "ajuda.mp3")
 		somAcertou = s.carregar_som(diretorioSons + "acertou.mp3")
 		somErrou = s.carregar_som(diretorioSons + "errou.mp3")
 		somPerdeu = s.carregar_som(diretorioSons + "perdeu.mp3")
 		somStart = s.carregar_som(diretorioSons + "start.mp3")
 		somVenceu = s.carregar_som(diretorioSons + "venceu.mp3")
 		tocarSom(somStart, 2, falso)
-	}
-
-
-// Para cada chute dado (letra digitada), contabiliza-o como erro ou acerto e,
-// caso se trate de acerto, exibe esse chute/letra em todas as posições dele
-// na máscara da palavra que foi sorteada.
-	funcao contarErrosAcertosEDesmascararAcertos()
-	{
-		inteiro qtdDesmascaradaChute = 0
-		para (inteiro cont = 0; cont < tamanhoPalSort; cont++)
-		{
-			se(t.obter_caracter(palSort, cont) == conv.cadeia_para_caracter(chute) e t.obter_caracter(mascara, cont) != conv.cadeia_para_caracter(chute))
-			{
-				mascara = substituir(chute, cont, mascara)
-				qtdDesmascaradaChute++
-			}
-		}
-		se(qtdDesmascaradaChute > 0)
-		{
-			acertos++
-			tocarSom(somAcertou, 1, falso)
-		}
-		senao
-		{
-			erros++
-			tocarSom(somErrou, 1, falso)
-		}
 	}
 
 
@@ -229,6 +211,33 @@ programa
 				escreva(", ", timer, "s.")
 			}
 			use.aguarde(1000)
+		}
+	}
+
+
+// Para cada chute dado (letra digitada), contabiliza-o como erro ou acerto e,
+// caso se trate de acerto, exibe esse chute/letra em todas as posições dele
+// na máscara da palavra que foi sorteada.
+	funcao contarErrosAcertosEDesmascararAcertos()
+	{
+		inteiro qtdDesmascaradaChute = 0
+		para (inteiro cont = 0; cont < tamanhoPalSort; cont++)
+		{
+			se(t.obter_caracter(palSort, cont) == conv.cadeia_para_caracter(chute) e t.obter_caracter(mascara, cont) != conv.cadeia_para_caracter(chute))
+			{
+				mascara = substituir(chute, cont, mascara)
+				qtdDesmascaradaChute++
+			}
+		}
+		se(qtdDesmascaradaChute > 0)
+		{
+			acertos++
+			tocarSom(somAcertou, 1, falso)
+		}
+		senao
+		{
+			erros++
+			tocarSom(somErrou, 1, falso)
 		}
 	}
 
@@ -289,12 +298,20 @@ programa
 			escreva("Que pena, ")
 			se(tempoAcabou == verdadeiro)
 			{
-				escreva("o tempo acabou e ")
+				escreva("o tempo acabou")
 			}
-			escreva("você foi enforcado! A palavra era ", palSort, ".\n")
+			se(erros==MAX_ERROS)
+			{
+				escreva("você deu 6 chutes errados")
+			}
+			se(letrasChutadas[MAX_CHUTES-1] != "")
+			{
+				escreva("não há mais chutes disponíveis")
+			}
+			escreva(", por isto você foi enforcado! A palavra era ", palSort, ".\n")
 			tocarSom(somPerdeu, 2, falso)
 		}
-		use.aguarde(5000)
+		use.aguarde(10000)
 		limpa()
 		cadeia resposta=""
 		enquanto(t.caixa_alta(resposta) != "S" e t.caixa_alta(resposta) != "J")
@@ -305,6 +322,9 @@ programa
 		se(t.caixa_alta(resposta)=="S")
 		{
 			sair=verdadeiro
+			limpa()
+			escreva("ATÉ UMA PRÓXIMA!")
+			use.aguarde(3000)
 		}
 		senao
 		{
@@ -344,7 +364,7 @@ programa
 // Mascara o vetor letrasChutadas com o caractere de interrogação.
 	funcao mascararLetrasChutadas()
 	{
-		para(inteiro cont = 0; cont < 26; cont++)
+		para(inteiro cont = 0; cont < MAX_CHUTES; cont++)
 		{
 			letrasChutadas[cont] = ""
 		}
@@ -430,53 +450,6 @@ programa
 			}
 		}
 		escreva("\n")
-	}
-
-
-// Reinicia as variáveis globais para poder reiniciar o jogo.
-	funcao reiniciarJogo()
-	{
-		// Redefine o momento em que a partida em andamento deverá ser encerrada por ter excedido o tempo limite:
-		timeout = use.tempo_decorrido()+DURACAO*1000
-
-		// Redefinte se o timeout ocorreu:
-		tempoAcabou = falso
-
-		// Sorteia um novo número de palavra:
-		numPalSort = use.sorteia(0, qtdPal-1)
-
-		// Reinicia a numeração da dica da palavra que foi sorteada:
-		numDica = 1
-		
-		// Obtém a nova palavra que foi sorteada:
-		palSort = obter(numPalSort, 0, fonte)
-		
-		// Nº de caracteres da nova palavra sorteada:
-		tamanhoPalSort = t.numero_caracteres(palSort)
-
-		// Nº de caracteres da nova palavra sorteada após os caracteres repetidos terem sido eliminados:
-		tamanhoPalSortSemRepeticoes = tamanhoSemRepeticoes(palSort, tamanhoPalSort)
-
-		// Máscara da nova palavra sorteada:
-		mascara = criarMascara(palSort, tamanhoPalSort)
-
-		// Limpa o chute:
-		chute=""
-
-		// Limpa o histórico de chutes do (i.e. caracteres digitados pelo) jogador:
-		para(inteiro cont = 0; cont < MAX_CHUTES; cont++)
-		{
-			letrasChutadas[cont]=""
-		}
-
-		// Reinicializa a quantidade de chutes dados pelo jogador durante a partida:
-		qtdChutesDados = -1
-
-		// Reinicializa a quantidade de chutes do jogador que correspondem a algum caractere da nova palavra sorteada:
-		acertos = 0
-
-		// Reinicializa a quantidade de chutes do jogador que não correspondem a nenhum caractere da nova palavra sorteada:
-		erros = 0
 	}
 
 
@@ -568,6 +541,60 @@ programa
 	}
 
 
+// Processa o pedido de dica feito pelo jogador.
+	funcao processaDica()
+	{
+		erros++
+		numDica++
+		qtdChutesDados--
+		tocarSom(somAjuda, 2, falso)
+	}
+
+
+// Reinicia as variáveis globais para poder reiniciar o jogo.
+	funcao reiniciarJogo()
+	{
+		// Redefine o momento em que a partida em andamento deverá ser encerrada por ter excedido o tempo limite:
+		timeout = use.tempo_decorrido()+DURACAO_MAX_DO_JOGO*1000
+
+		// Redefinte se o timeout ocorreu:
+		tempoAcabou = falso
+
+		// Sorteia um novo número de palavra:
+		numPalSort = use.sorteia(0, qtdPal-1)
+
+		// Reinicia a numeração da dica da palavra que foi sorteada:
+		numDica = 1
+		
+		// Obtém a nova palavra que foi sorteada:
+		palSort = obter(numPalSort, 0, fonte)
+		
+		// Nº de caracteres da nova palavra sorteada:
+		tamanhoPalSort = t.numero_caracteres(palSort)
+
+		// Nº de caracteres da nova palavra sorteada após os caracteres repetidos terem sido eliminados:
+		tamanhoPalSortSemRepeticoes = tamanhoSemRepeticoes(palSort, tamanhoPalSort)
+
+		// Máscara da nova palavra sorteada:
+		mascara = criarMascara(palSort, tamanhoPalSort)
+
+		// Limpa o chute:
+		chute=""
+
+		// Limpa o histórico de chutes do (i.e. caracteres digitados pelo) jogador:
+		mascararLetrasChutadas()
+
+		// Reinicializa a quantidade de chutes dados pelo jogador durante a partida:
+		qtdChutesDados = -1
+
+		// Reinicializa a quantidade de chutes do jogador que correspondem a algum caractere da nova palavra sorteada:
+		acertos = 0
+
+		// Reinicializa a quantidade de chutes do jogador que não correspondem a nenhum caractere da nova palavra sorteada:
+		erros = 0
+	}
+
+
 // Substitui a letra informada na posição informada da palavra informada.
 	funcao cadeia substituir(cadeia letra, inteiro posicao, cadeia palavra)
 	{
@@ -631,7 +658,7 @@ programa
  * Você pode apagá-la se estiver utilizando outro editor.
  * 
  * @POSICAO-CURSOR = 0; 
- * @DOBRAMENTO-CODIGO = [80, 87, 95, 76, 137, 146, 159, 167, 182, 207, 238, 267, 279, 317, 331, 344, 354, 368, 416, 436, 488, 571, 591, 617, 0];
+ * @DOBRAMENTO-CODIGO = [86, 93, 101, 81, 140, 149, 167, 175, 189, 220, 247, 276, 288, 337, 351, 364, 374, 388, 436, 461, 544, 554, 598, 618, 644, 0];
  * @PONTOS-DE-PARADA = ;
  * @SIMBOLOS-INSPECIONADOS = ;
  * @FILTRO-ARVORE-TIPOS-DE-DADO = inteiro, real, logico, cadeia, caracter, vazio;
