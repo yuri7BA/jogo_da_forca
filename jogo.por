@@ -490,19 +490,19 @@ programa
 	{
 		se(linhaDesejada < 0 ou linhaDesejada > 99)
 		{
-			retorne "\nobtenha(): O nº da linha tem de ser um nº inteiro entre 0 e 99 (inclusive)!"
+			retorne "\nobter(): O nº da linha tem de ser um nº inteiro entre 0 e 99 (inclusive)!"
 		}
 		senao
 		{
 			se(colunaDesejada < 0 ou colunaDesejada > 10)
 			{
-				retorne "\nobtenha(): O nº da coluna tem de ser um nº inteiro entre 0 e 10 (inclusive)!"
+				retorne "\nobter(): O nº da coluna tem de ser um nº inteiro entre 0 e 10 (inclusive)!"
 			}
 			senao
 			{
 				se(nao a.arquivo_existe(caminhoPraFonte))
 				{
-					retorne "\nobtenha(): Caminho inválido para o arquivo fonte de dados!"
+					retorne "\nobter(): Caminho inválido para o arquivo fonte de dados!"
 				}
 				senao //Se os 3 parâmetros de entrada estão corretos, então:
 				{
@@ -562,9 +562,9 @@ programa
 					}
 					a.fechar_arquivo(arquivoFonte)
 					retorne matriz[linhaDesejada][colunaDesejada]
-				}//<-- fecha o 3º "senao" da função obtenha()
-			}//<-- fecha o 2º "senao" da função obtenha()
-		}//<-- fecha o 1º "senao" da função obtenha()
+				}//<-- fecha o 3º "senao" da função obter()
+			}//<-- fecha o 2º "senao" da função obter()
+		}//<-- fecha o 1º "senao" da função obter()
 	}
 
 
