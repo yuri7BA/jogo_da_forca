@@ -16,7 +16,7 @@ programa // PARA JOGAR, CLIQUE NO BOTÃO "PLAY" DO PORTUGOL OU PRESSIONE SHIFT F
 	// Quantidade máxima de erros por partida:
 	const inteiro MAX_ERROS = 6
 
-	// Quantidade máxima de chutes (certos + errados) por partida:
+	// Quantidade máxima de chutes (certos + errados, inclusive dicas pedidas) por partida:
 	const inteiro MAX_CHUTES = 30
 
 	// Duração da contagem regressiva na tela de apresentação dos alunos, em segundos:
@@ -302,7 +302,7 @@ programa // PARA JOGAR, CLIQUE NO BOTÃO "PLAY" DO PORTUGOL OU PRESSIONE SHIFT F
 			}
 			se(erros==MAX_ERROS)
 			{
-				escreva("você deu 6 chutes errados")
+				escreva("você gastou suas 6 chances (dicas + chutes errados)")
 			}
 			se(letrasChutadas[MAX_CHUTES-1] != "")
 			{
@@ -329,6 +329,7 @@ programa // PARA JOGAR, CLIQUE NO BOTÃO "PLAY" DO PORTUGOL OU PRESSIONE SHIFT F
 		senao
 		{
 			sair=falso
+			tocarSom(somStart, 2, falso)
 		}
 		retorne sair
 	}
@@ -428,7 +429,7 @@ programa // PARA JOGAR, CLIQUE NO BOTÃO "PLAY" DO PORTUGOL OU PRESSIONE SHIFT F
 		escreva("  ",cabeca,"   |   ",mascararComEspacos(tamanhoPalSort))
 		escreva(" ",tronco,"  |\n")
 		escreva(" ",pernas,"  |   ")mostrarLetrasChutadas()
-		escreva("      |\n")
+		escreva("      |   Dicas pedidas: ", numDica-1, ". Chutes errados: ", erros-(numDica-1),".\n")
 		escreva("=========\n")
 	}
 
@@ -658,7 +659,7 @@ programa // PARA JOGAR, CLIQUE NO BOTÃO "PLAY" DO PORTUGOL OU PRESSIONE SHIFT F
  * Você pode apagá-la se estiver utilizando outro editor.
  * 
  * @POSICAO-CURSOR = 0; 
- * @DOBRAMENTO-CODIGO = [86, 93, 101, 81, 140, 149, 167, 175, 189, 220, 247, 276, 288, 337, 351, 364, 374, 388, 436, 461, 544, 554, 598, 618, 644, 0];
+ * @DOBRAMENTO-CODIGO = [86, 93, 101, 81, 140, 149, 167, 175, 189, 220, 247, 276, 288, 338, 352, 365, 375, 389, 437, 462, 545, 555, 599, 619, 645, 0];
  * @PONTOS-DE-PARADA = ;
  * @SIMBOLOS-INSPECIONADOS = ;
  * @FILTRO-ARVORE-TIPOS-DE-DADO = inteiro, real, logico, cadeia, caracter, vazio;
