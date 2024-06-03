@@ -1,5 +1,6 @@
 programa // PARA JOGAR, CLIQUE NO BOTÃO "PLAY" DO PORTUGOL OU PRESSIONE SHIFT F6.
 {
+
 	inclua biblioteca Arquivos-->a
 	inclua biblioteca Calendario-->c
 	inclua biblioteca Sons-->s
@@ -10,10 +11,10 @@ programa // PARA JOGAR, CLIQUE NO BOTÃO "PLAY" DO PORTUGOL OU PRESSIONE SHIFT F
 
 	
 	// CONSTANTES GLOBAIS
-	// Duração de uma partida, em segundos:
-	const inteiro DURACAO_MAX_DO_JOGO = 60
+	// Duração máxima de uma partida, em segundos:
+	const inteiro DURACAO_MAX_JOGO = 60
 
-	// Quantidade máxima de erros por partida:
+	// Quantidade máxima de erros (i.e. chutes errados + pedidos de dica) por partida:
 	const inteiro MAX_ERROS = 6
 
 	// Quantidade máxima de chutes (certos + errados, inclusive dicas pedidas) por partida:
@@ -21,8 +22,6 @@ programa // PARA JOGAR, CLIQUE NO BOTÃO "PLAY" DO PORTUGOL OU PRESSIONE SHIFT F
 
 	// Duração da contagem regressiva na tela de apresentação dos alunos, em segundos:
 	const inteiro DURACAO_COUNTDOWN_ALUNOS = 30
-
-	// Quantidade máxima de chutes que podem ser armazenados no vetor:
 
 
 	// VARIÁVEIS GLOBAIS
@@ -98,7 +97,7 @@ programa // PARA JOGAR, CLIQUE NO BOTÃO "PLAY" DO PORTUGOL OU PRESSIONE SHIFT F
 			escreva("Tamanho da palavra sorteada sem repetições: ",tamanhoPalSortSemRepeticoes,"\n") */
 			carregarSons()
 			mascararLetrasChutadas()
-			timeout = use.tempo_decorrido()+DURACAO_MAX_DO_JOGO*1000
+			timeout = use.tempo_decorrido()+DURACAO_MAX_JOGO*1000
 			enquanto(sair==falso)
 			{
 				
@@ -141,7 +140,7 @@ programa // PARA JOGAR, CLIQUE NO BOTÃO "PLAY" DO PORTUGOL OU PRESSIONE SHIFT F
 	funcao alunos()
 	{
 		escreva("JOGO DA FORCA, versão 1.0 --> JOGO[x] DICAS[x] CONTROLE DE TEMPO[x]\n\nAlunos: FABIO SAMPAIO (100%, RA 1680482411001), JUAN PABLLO (100%, RA 1680482411005) e YURI SUCUPIRA (100%, RA 1680482411003)\n\n")
-		contadorRegressivo1s("DURAÇÃO MÁXIMA DA PARTIDA: "+DURACAO_MAX_DO_JOGO+" SEGUNDOS. VOCÊ PODE DAR NO MÁXIMO "+MAX_CHUTES+" CHUTES E ERRAR NO MÁXIMO "+MAX_ERROS+" CHUTES.\nPARA PEDIR UMA DICA AO JOGO, ENVIE A PALAVRA 'DICA' NO LUGAR DO CHUTE, MAS CADA PEDIDO DE DICA CONTA COMO UM CHUTE ERRADO!\n\nEsta mensagem se autodestruirá em ", DURACAO_COUNTDOWN_ALUNOS)
+		contadorRegressivo1s("DURAÇÃO MÁXIMA DA PARTIDA: "+DURACAO_MAX_JOGO+" SEGUNDOS. VOCÊ PODE DAR NO MÁXIMO "+MAX_CHUTES+" CHUTES E ERRAR NO MÁXIMO "+MAX_ERROS+" CHUTES.\nPARA PEDIR UMA DICA AO JOGO, ENVIE A PALAVRA 'DICA' NO LUGAR DO CHUTE, MAS CADA PEDIDO DE DICA CONTA COMO UM CHUTE ERRADO!\n\nEsta mensagem se autodestruirá em ", DURACAO_COUNTDOWN_ALUNOS)
 		limpa()
 	}
 
@@ -311,7 +310,7 @@ programa // PARA JOGAR, CLIQUE NO BOTÃO "PLAY" DO PORTUGOL OU PRESSIONE SHIFT F
 			escreva(", por isto você foi enforcado! A palavra era ", palSort, ".\n")
 			tocarSom(somPerdeu, 2, falso)
 		}
-		use.aguarde(10000)
+		contadorRegressivo1s("", 10)
 		limpa()
 		cadeia resposta=""
 		enquanto(t.caixa_alta(resposta) != "S" e t.caixa_alta(resposta) != "J")
@@ -513,7 +512,7 @@ programa // PARA JOGAR, CLIQUE NO BOTÃO "PLAY" DO PORTUGOL OU PRESSIONE SHIFT F
 											++colunaDaMatriz
 											matriz[linhaDaMatriz][colunaDaMatriz] = ""
 										}
-											pare
+										pare
 									}
 								}
 								se(a.fim_arquivo(arquivoFonte))
@@ -556,7 +555,7 @@ programa // PARA JOGAR, CLIQUE NO BOTÃO "PLAY" DO PORTUGOL OU PRESSIONE SHIFT F
 	funcao reiniciarJogo()
 	{
 		// Redefine o momento em que a partida em andamento deverá ser encerrada por ter excedido o tempo limite:
-		timeout = use.tempo_decorrido()+DURACAO_MAX_DO_JOGO*1000
+		timeout = use.tempo_decorrido()+DURACAO_MAX_JOGO*1000
 
 		// Redefinte se o timeout ocorreu:
 		tempoAcabou = falso
@@ -599,6 +598,7 @@ programa // PARA JOGAR, CLIQUE NO BOTÃO "PLAY" DO PORTUGOL OU PRESSIONE SHIFT F
 // Substitui a letra informada na posição informada da palavra informada.
 	funcao cadeia substituir(cadeia letra, inteiro posicao, cadeia palavra)
 	{
+		letra = conv.caracter_para_cadeia(t.obter_caracter(letra, 0))
 		cadeia palavraAlterada = ""
 		para(inteiro endereco = 0; endereco < t.numero_caracteres(palavra); endereco++)
 		{
@@ -659,7 +659,7 @@ programa // PARA JOGAR, CLIQUE NO BOTÃO "PLAY" DO PORTUGOL OU PRESSIONE SHIFT F
  * Você pode apagá-la se estiver utilizando outro editor.
  * 
  * @POSICAO-CURSOR = 0; 
- * @DOBRAMENTO-CODIGO = [86, 93, 101, 81, 140, 149, 167, 175, 189, 220, 247, 276, 288, 338, 352, 365, 375, 389, 437, 462, 545, 555, 599, 619, 645, 0];
+ * @DOBRAMENTO-CODIGO = [84, 91, 99, 79, 138, 147, 165, 173, 187, 218, 245, 274, 286, 336, 350, 363, 373, 387, 435, 460, 543, 553, 597, 618, 644, 0];
  * @PONTOS-DE-PARADA = ;
  * @SIMBOLOS-INSPECIONADOS = ;
  * @FILTRO-ARVORE-TIPOS-DE-DADO = inteiro, real, logico, cadeia, caracter, vazio;
