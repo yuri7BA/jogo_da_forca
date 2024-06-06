@@ -73,3 +73,31 @@ D:uso frequente no inverno
 D:várias cores
 D:é de calçar
 D:pode ser temático
+P:luta
+D:é um esporte
+D:geralmente praticado 1 contra 1
+D:apostadores costumam apostar num vencedor
+D:pode ser praticado na rua
+D:se praticado na rua, pode envolver várias pessoas
+D:possui diversas modalidades
+D:alguns esportistas combinam 2 ou mais modalides
+D:homens e mulheres praticam
+D:na rua é mais comum homens praticarem
+D:pode não ser usado como esporte, mas para ataque e/ou defesa
+P:cigarro
+D:é pequeno
+D:é cilíndrico
+D:faz mal pra saúde
+D:já foi moda consumi-lo
+D:libera fumaça
+D:revestido por papel
+D:alguns possuem filtro pra fumaça
+P:alcaçuz
+D:é uma planta
+D:é medicinal
+D:é comestível
+D:tem sabor doce
+D:contém glicirrizina (anti-inflamatório, antioxidante e bactericida)
+D:tem sabor refrescante
+D:a parte usada é a raiz
+D:também conhecida como regaliz ou raiz-doce
