@@ -3,8 +3,9 @@ programa // PARA JOGAR, CLIQUE NO BOTÃO "PLAY" DO PORTUGOL OU PRESSIONE SHIFT F
 
 	inclua biblioteca Arquivos-->a
 	inclua biblioteca Calendario-->c
+	inclua biblioteca Matematica-->m
 	inclua biblioteca Sons-->s
-	inclua biblioteca Teclado-->k
+	//inclua biblioteca Teclado-->k [não funcionou na interface somente-texto do Portugol para Linux]
 	inclua biblioteca Texto-->t
 	inclua biblioteca Tipos-->conv
 	inclua biblioteca Util-->use
@@ -12,7 +13,7 @@ programa // PARA JOGAR, CLIQUE NO BOTÃO "PLAY" DO PORTUGOL OU PRESSIONE SHIFT F
 	
 	// CONSTANTES GLOBAIS
 	// Duração máxima de uma partida, em segundos:
-	const inteiro DURACAO_MAX_JOGO = 60
+	const inteiro DURACAO_MAX_JOGO = 120
 
 	// Quantidade máxima de erros (i.e. chutes errados + pedidos de dica) por partida:
 	const inteiro MAX_ERROS = 6
@@ -72,11 +73,14 @@ programa // PARA JOGAR, CLIQUE NO BOTÃO "PLAY" DO PORTUGOL OU PRESSIONE SHIFT F
 	// Quantidade de chutes do jogador que não correspondem a nenhum caractere da palavra sorteada:
 	inteiro erros = 0
 
-	// Variáveis que armazenam os endereços de memória dos sons utilizados no jogo
-	inteiro somAcertou, somAjuda, somErrou, somPerdeu, somQuit, somStart, somVenceu
+	// Variáveis que armazenam os endereços de memória dos sons utilizados no jogo:
+	inteiro somAcertou, somAjuda, somErrou, somPerdeu, somQuit, somStart, somSuspense, somVenceu, somVouMorrer
 
 	// Inicia o jogo em modo de loop.
 	logico sair=falso
+
+	// Registra se o áudio de aviso de última chance já foi executado.
+	logico jaTocouAviso = falso
 
 	funcao inicio()
 	{
@@ -112,16 +116,7 @@ programa // PARA JOGAR, CLIQUE NO BOTÃO "PLAY" DO PORTUGOL OU PRESSIONE SHIFT F
 						tempoAcabou = verdadeiro
 						pare
 					}
-					se(t.caixa_alta(chute)=="DICA")
-					{
-						processaDica()
-					}
-					senao
-					{
-						chute = t.caixa_alta(conv.caracter_para_cadeia(t.obter_caracter(chute, 0)))
-						avisaCasoLetraJaChutada()
-						contarErrosAcertosEDesmascararAcertos()
-					}
+					processarChuteOuPedidoDeDica()
 				}
 				mostrarForca(erros)
 				gameover()
@@ -139,8 +134,33 @@ programa // PARA JOGAR, CLIQUE NO BOTÃO "PLAY" DO PORTUGOL OU PRESSIONE SHIFT F
 //Apresenta os alunos que desenvolveram o jogo.
 	funcao alunos()
 	{
+		cadeia avisoDaDuracaoMaxima
+		inteiro minutos
+		inteiro segundos
+		se(DURACAO_MAX_JOGO<=60)
+		{
+			avisoDaDuracaoMaxima = DURACAO_MAX_JOGO+" SEGUNDOS"
+		}
+		senao
+		{
+			minutos = DURACAO_MAX_JOGO / 60
+			segundos = DURACAO_MAX_JOGO % 60
+			avisoDaDuracaoMaxima = minutos + " MINUTO"
+			se(minutos > 1)
+			{
+				avisoDaDuracaoMaxima += "S"
+			}
+			se(segundos > 0)
+			{
+				avisoDaDuracaoMaxima += " E "+segundos+" SEGUNDO"
+			}
+			se(segundos > 1)
+			{
+				avisoDaDuracaoMaxima += "S"
+			}
+		}
 		escreva("JOGO DA FORCA, versão 1.0 --> JOGO[x] DICAS[x] CONTROLE DE TEMPO[x]\n\nAlunos: FABIO SAMPAIO (100%, RA 1680482411001), JUAN PABLLO (100%, RA 1680482411005) e YURI SUCUPIRA (100%, RA 1680482411003)\n\n")
-		contadorRegressivo1s("DURAÇÃO MÁXIMA DA PARTIDA: "+DURACAO_MAX_JOGO+" SEGUNDOS. VOCÊ PODE DAR NO MÁXIMO "+MAX_CHUTES+" CHUTES E ERRAR NO MÁXIMO "+MAX_ERROS+" CHUTES.\nPARA PEDIR UMA DICA AO JOGO, ENVIE A PALAVRA 'DICA' NO LUGAR DO CHUTE, MAS CADA PEDIDO DE DICA CONTA COMO UM CHUTE ERRADO!\n\nEsta mensagem se autodestruirá em ", DURACAO_COUNTDOWN_ALUNOS)
+		contadorRegressivo1s("DURAÇÃO MÁXIMA DA PARTIDA: "+avisoDaDuracaoMaxima+". VOCÊ PODE DAR NO MÁXIMO "+MAX_CHUTES+" CHUTES E ERRAR NO MÁXIMO "+MAX_ERROS+" CHUTES.\nPARA PEDIR UMA DICA AO JOGO, ENVIE A PALAVRA 'DICA' NO LUGAR DO CHUTE, MAS CADA PEDIDO DE DICA CONTA COMO UM CHUTE ERRADO!\n\nO jogo iniciará daqui a ", DURACAO_COUNTDOWN_ALUNOS)
 		limpa()
 	}
 
@@ -180,7 +200,9 @@ programa // PARA JOGAR, CLIQUE NO BOTÃO "PLAY" DO PORTUGOL OU PRESSIONE SHIFT F
 		somErrou = s.carregar_som(diretorioSons + "errou.mp3")
 		somPerdeu = s.carregar_som(diretorioSons + "perdeu.mp3")
 		somStart = s.carregar_som(diretorioSons + "start.mp3")
+		somSuspense = s.carregar_som(diretorioSons + "suspense.mp3")
 		somVenceu = s.carregar_som(diretorioSons + "venceu.mp3")
+		somVouMorrer = s.carregar_som(diretorioSons + "voumorrer.mp3")
 		tocarSom(somStart, 2, falso)
 	}
 
@@ -294,6 +316,8 @@ programa // PARA JOGAR, CLIQUE NO BOTÃO "PLAY" DO PORTUGOL OU PRESSIONE SHIFT F
 		}
 		senao
 		{
+			use.aguarde(500)
+			tocarSom(somVouMorrer, 1, falso)
 			escreva("Que pena, ")
 			se(tempoAcabou == verdadeiro)
 			{
@@ -310,7 +334,7 @@ programa // PARA JOGAR, CLIQUE NO BOTÃO "PLAY" DO PORTUGOL OU PRESSIONE SHIFT F
 			escreva(", por isto você foi enforcado! A palavra era ", palSort, ".\n")
 			tocarSom(somPerdeu, 2, falso)
 		}
-		contadorRegressivo1s("", 10)
+		contadorRegressivo1s("", 5)
 		limpa()
 		cadeia resposta=""
 		enquanto(t.caixa_alta(resposta) != "S" e t.caixa_alta(resposta) != "J")
@@ -322,7 +346,7 @@ programa // PARA JOGAR, CLIQUE NO BOTÃO "PLAY" DO PORTUGOL OU PRESSIONE SHIFT F
 		{
 			sair=verdadeiro
 			limpa()
-			escreva("ATÉ UMA PRÓXIMA!")
+			escreva("ATÉ A PRÓXIMA!")
 			use.aguarde(3000)
 		}
 		senao
@@ -424,8 +448,17 @@ programa // PARA JOGAR, CLIQUE NO BOTÃO "PLAY" DO PORTUGOL OU PRESSIONE SHIFT F
 		}
 		//escreva("  .:::.   Dica: ",mostrarDica(numPalSort, acertos+erros+1),"\n")
 		escreva("  .:::.   Dica: ",mostrarDica(numPalSort, numDica),"\n")
-		escreva("  |   |\n")
-		escreva("  ",cabeca,"   |   ",mascararComEspacos(tamanhoPalSort))
+		escreva("  |   |   ")
+		se(erros == 5)
+		{
+			escreva("   ***** SE ERRAR DE NOVO OU PEDIR DICA É FIM DE JOGO! *****")
+			se(jaTocouAviso == falso)
+			{
+				tocarSom(somSuspense, 7, falso)
+				jaTocouAviso = verdadeiro
+			}
+		}
+		escreva("\n  ",cabeca,"   |   ",mascararComEspacos(tamanhoPalSort))
 		escreva(" ",tronco,"  |\n")
 		escreva(" ",pernas,"  |   ")mostrarLetrasChutadas()
 		escreva("      |   Dicas pedidas: ", numDica-1, ". Chutes errados: ", erros-(numDica-1),".\n")
@@ -541,13 +574,22 @@ programa // PARA JOGAR, CLIQUE NO BOTÃO "PLAY" DO PORTUGOL OU PRESSIONE SHIFT F
 	}
 
 
-// Processa o pedido de dica feito pelo jogador.
-	funcao processaDica()
+//Processa o chute ou dica pedida.
+	funcao processarChuteOuPedidoDeDica()
 	{
-		erros++
-		numDica++
-		qtdChutesDados--
-		tocarSom(somAjuda, 2, falso)
+		se(t.caixa_alta(chute)=="DICA")
+		{
+			erros++
+			numDica++
+			qtdChutesDados--
+			tocarSom(somAjuda, 2, falso)
+		}
+		senao
+		{
+			chute = t.caixa_alta(conv.caracter_para_cadeia(t.obter_caracter(chute, 0)))
+			avisaCasoLetraJaChutada()
+			contarErrosAcertosEDesmascararAcertos()
+		}
 	}
 
 
@@ -592,6 +634,9 @@ programa // PARA JOGAR, CLIQUE NO BOTÃO "PLAY" DO PORTUGOL OU PRESSIONE SHIFT F
 
 		// Reinicializa a quantidade de chutes do jogador que não correspondem a nenhum caractere da nova palavra sorteada:
 		erros = 0
+
+		// Registra que o áudio de aviso de última chance ainda não foi executado.
+		jaTocouAviso = falso
 	}
 
 
@@ -659,7 +704,7 @@ programa // PARA JOGAR, CLIQUE NO BOTÃO "PLAY" DO PORTUGOL OU PRESSIONE SHIFT F
  * Você pode apagá-la se estiver utilizando outro editor.
  * 
  * @POSICAO-CURSOR = 0; 
- * @DOBRAMENTO-CODIGO = [84, 91, 99, 79, 138, 147, 165, 173, 187, 218, 245, 274, 286, 336, 350, 363, 373, 387, 435, 460, 543, 553, 597, 618, 644, 0];
+ * @DOBRAMENTO-CODIGO = [89, 84, 134, 168, 186, 194, 210, 241, 268, 297, 309, 361, 375, 388, 398, 412, 469, 494, 577, 596, 643, 664, 690, 0];
  * @PONTOS-DE-PARADA = ;
  * @SIMBOLOS-INSPECIONADOS = ;
  * @FILTRO-ARVORE-TIPOS-DE-DADO = inteiro, real, logico, cadeia, caracter, vazio;
